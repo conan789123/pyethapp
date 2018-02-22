@@ -529,9 +529,6 @@ class ChainService(WiredService):
             log.warn("invalid genesis hash", remote_id=proto, genesis=encode_hex(genesis_hash))
             raise eth_protocol.ETHProtocolError('wrong genesis block')
 
-        # initiate DAO challenge
-        self.dao_challenges[proto] = (DAOChallenger(self, proto), chain_head_hash, chain_difficulty)
-
     def on_dao_challenge_answer(self, proto, result):
         if result:
             log.debug("DAO challenge passed")
