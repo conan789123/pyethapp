@@ -405,7 +405,7 @@ class ChainService(WiredService):
             log.debug('broadcasting newblock', origin=origin)
             bcast = self.app.services.peermanager.broadcast
             bcast(eth_protocol.ETHProtocol, 'newblock', args=(block, chain_difficulty),
-                  exclude_peers=[origin.peer] if origin else [])
+                  exclude_peers=[origin.peer] if origin is not None else [])
         else:
             log.debug('already broadcasted block')
 
@@ -415,7 +415,7 @@ class ChainService(WiredService):
             log.debug('broadcasting tx', origin=origin)
             bcast = self.app.services.peermanager.broadcast
             bcast(eth_protocol.ETHProtocol, 'transactions', args=(tx,),
-                  exclude_peers=[origin.peer] if origin else [])
+                  exclude_peers=[origin.peer] if origin is not None else [])
         else:
             log.debug('already broadcasted tx')
 
