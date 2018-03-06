@@ -179,7 +179,6 @@ class ChainService(WiredService):
                 "Genesis hash mismatch.\n  Expected: %s\n  Got: %s" % (
                     sce['genesis_hash'], self.chain.genesis.hex_hash)
 
-        self.dao_challenges = dict()
         self.synchronizer = Synchronizer(self, force_sync=None)
 
         self.block_queue = Queue(maxsize=self.block_queue_size)
@@ -605,10 +604,7 @@ class ChainService(WiredService):
         else:
             log.debug("recv 0 remote block headers, signifying genesis block")
 
-        if proto in self.dao_challenges:
-            self.dao_challenges[proto][0].receive_blockheaders(proto, blockheaders)
-        else:
-            self.synchronizer.receive_blockheaders(proto, blockheaders)
+        self.synchronizer.receive_blockheaders(proto, blockheaders)
 
     # blocks ################
 
