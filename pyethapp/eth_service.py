@@ -529,23 +529,13 @@ class ChainService(WiredService):
             log.warn("invalid genesis hash", remote_id=proto, genesis=encode_hex(genesis_hash))
             raise eth_protocol.ETHProtocolError('wrong genesis block')
 
-    def on_dao_challenge_answer(self, proto, result):
-        if result:
-            log.debug("DAO challenge passed")
-            _, chain_head_hash, chain_difficulty = self.dao_challenges[proto]
-
-            # request chain
-            self.synchronizer.receive_status(proto, chain_head_hash, chain_difficulty)
-            # send transactions
-            transactions = self.transaction_queue.peek()
-            if transactions:
-                log.debug("sending transactions", remote_id=proto)
-                proto.send_transactions(*transactions)
-        else:
-            log.debug("peer failed to answer DAO challenge, stop.", proto=proto)
-            if proto.peer:
-                proto.peer.stop()
-        del self.dao_challenges[proto]
+        # request chain
+        self.synchronizer.receive_status(proto, chain_head_hash, chain_difficulty)
+        # send transactions
+        transactions = self.transaction_queue.peek()
+        if transactions:
+            log.debug("sending transactions", remote_id=proto)
+            proto.send_transactions(*transactions)
 
     # transactions
 
